@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>做哲學：與生成式 AI 一起思考｜台灣哲學學會工作坊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@200;300;400;500;600;700;900&family=Noto+Sans+TC:wght@400;500;600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #E9E6DA;
+    --paper-deep: #E1DDCE;
+    --ink: #201E19;
+    --ink-soft: #4A4640;
+    --rule: #B7AE99;
+    --crit: #8A2E24;
+    --crit-soft: #B55A4E;
+    --gold: #8C6E2E;
+    --insert: #2F4A3E;
+    --font-body: 'Noto Sans TC', sans-serif;
+    --font-display: 'Noto Serif TC', serif;
+    --font-label: 'Noto Sans TC', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --max: 760px;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .reg-card .cap, .app-question, .example-card .q, .hero .thesis{
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+  .wrap{ max-width: var(--max); margin: 0 auto; padding: 0 28px; }
+
+  /* subtle paper texture */
+  body::before{
+    content:"";
+    position: fixed; inset:0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(0,0,0,0.015) 0, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(0,0,0,0.02) 0, transparent 45%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  header.masthead{
+    padding: 56px 0 28px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .masthead .wrap{
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .kicker{
+    font-family: var(--font-label);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+  h1.title{
+    font-size: clamp(28px, 4.4vw, 44px);
+    font-weight: 700;
+    margin: 8px 0 4px;
+    letter-spacing: 0.01em;
+  }
+  .title em{ font-style: italic; font-weight: 500; color: var(--crit); }
+  .meta-line{
+    font-family: var(--font-label);
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+    display:flex; flex-wrap:wrap; gap: 4px 18px;
+  }
+  .meta-line span::before{ content:"— "; color: var(--rule); }
+  .meta-line span:first-child::before{ content:""; }
+
+  section{ padding: 52px 0; position:relative; z-index:1; }
+  section + section{ border-top: 1px solid var(--rule); }
+
+  .eyebrow{
+    font-family: var(--font-label);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    margin-bottom: 14px;
+    display:block;
+  }
+
+  /* hero / 緣起 */
+  .hero p{
+    font-size: 17px;
+    color: var(--ink);
+    margin: 0 0 22px;
+  }
+  .hero p:first-of-type::first-letter{
+    font-family:'Noto Serif TC', serif;
+    font-weight: 900;
+    font-size: 3.6em;
+    float:left;
+    line-height: 0.8;
+    margin: 0.06em 0.09em 0 0;
+    color: var(--crit);
+  }
+  .hero .thesis{
+    font-size: 18px;
+    font-weight: 600;
+    border-left: 3px solid var(--crit);
+    padding-left: 18px;
+    margin: 30px 0;
+  }
+
+  /* 議程 table */
+  table.agenda{
+    width:100%;
+    border-collapse: collapse;
+    font-size: 14.5px;
+    margin-top: 10px;
+  }
+  table.agenda th{
+    text-align:left;
+    font-family: var(--font-label);
+    font-weight:600;
+    font-size:12px;
+    letter-spacing:0.04em;
+    color: var(--ink-soft);
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--ink);
+  }
+  table.agenda td{
+    padding: 10px 10px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  table.agenda td:first-child{
+    font-family:'IBM Plex Mono', monospace;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    width: 118px;
+  }
+  table.agenda tr.session td{ font-weight: 600; }
+
+  /* 三場引言 — 目錄 / contents 風格 */
+  .toc-item{
+    display:grid;
+    grid-template-columns: 46px 1fr;
+    gap: 18px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .toc-item:last-child{ border-bottom:none; }
+  .toc-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 22px;
+    color: var(--gold);
+    line-height:1.2;
+  }
+  .toc-body h3{
+    margin: 0 0 4px;
+    font-size: 19px;
+    font-weight: 600;
+  }
+  .toc-speaker{
+    font-family: var(--font-label);
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .toc-question{
+    color: var(--ink);
+    font-size: 15.5px;
+    border-left: 2px solid var(--crit-soft);
+    padding-left: 14px;
+  }
+
+  /* 下午議題舉例 卡片 */
+  .example-note{
+    font-family: var(--font-label);
+    font-size: 13px;
+    color: var(--crit-soft);
+    margin-bottom: 24px;
+    display:block;
+  }
+  .example-card{
+    padding: 18px 0;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .example-card:last-child{ border-bottom:none; }
+  .example-card .q{ font-weight:600; margin-bottom:6px; }
+  .example-card .op{ font-size: 14.5px; color: var(--ink-soft); }
+  .example-card .op::before{ content:"操作示例　"; font-family: var(--font-label); font-weight:600; font-size:12px; color: var(--gold); }
+
+  /* 三組的參與方式與參照 */
+  .modes{ background: var(--paper-deep); }
+  .mode-item{
+    padding: 26px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .mode-item:last-child{ border-bottom: none; }
+  .mode-head{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .mode-head span{
+    font-family: var(--font-mono);
+    color: var(--gold);
+    font-weight: 400;
+    margin-right: 10px;
+  }
+  .mode-body{ font-size: 15.5px; margin: 0 0 16px; }
+  .mode-ref{
+    border-left: 2px solid var(--crit-soft);
+    padding-left: 16px;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .mode-ref .ref-head{
+    font-weight: 600;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .mode-ref .ref-head::before{
+    content: "參照　";
+    font-family: var(--font-label);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--gold);
+  }
+  .mode-ref a{ color: var(--crit); text-decoration: none; border-bottom: 1px solid var(--crit-soft); }
+  .mode-ref .cite{ display:block; margin-top: 6px; font-size: 12.5px; }
+
+  /* 設計參考 */
+  .ref-list{ font-size: 14.5px; }
+  .ref-item{ margin-bottom: 16px; }
+  .ref-item a{ color: var(--crit); text-decoration: none; border-bottom: 1px solid var(--crit-soft); }
+  .ref-item a:hover{ border-bottom-color: var(--crit); }
+  .ref-item .ref-loc{ color: var(--ink-soft); font-size: 13px; }
+
+  /* 報名 */
+  .reg-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 8px;
+  }
+  @media (max-width: 620px){ .reg-grid{ grid-template-columns: 1fr; } }
+  .reg-card{
+    border: 1px solid var(--ink);
+    padding: 22px;
+  }
+  .reg-card.full{ background: var(--ink); color: var(--paper); }
+  .reg-card h3{
+    font-family: var(--font-label);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    margin: 0 0 10px;
+    font-weight:600;
+  }
+  .reg-card .cap{ font-size: 22px; font-weight:700; margin-bottom: 12px; }
+  .reg-card p{ font-size: 14px; margin: 0; }
+  .reg-meta{
+    margin-top: 26px;
+    display:flex; flex-wrap:wrap; gap: 6px 24px;
+    font-family: var(--font-label);
+    font-size: 14px;
+  }
+  .reg-meta strong{ color: var(--crit); }
+  .cta{
+    display:inline-block;
+    margin-top: 26px;
+    padding: 13px 26px;
+    background: var(--crit);
+    color: #fff;
+    font-family: var(--font-label);
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid var(--crit);
+    transition: background 0.15s ease;
+  }
+  .cta:hover{ background: #6f231b; }
+
+  footer.colophon{
+    padding: 40px 0 60px;
+    font-family: var(--font-label);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.8;
+  }
+
+  h2.section-title{
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 20px;
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    .fade-in{ animation: fadeIn 0.9s ease both; }
+    @keyframes fadeIn{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform:none; } }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <span class="kicker">台灣哲學學會　主辦</span>
+    <h1 class="title fade-in">做哲學：與生成式 <em>AI</em> 一起思考</h1>
+    <div class="meta-line">
+      <span>2026 年 10 月 11 日（週六）10:00–17:00</span>
+      <span>台灣大學哲學系館</span>
+      <span>整日工作坊</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">緣起</span>
+      <p>如果論證的初稿、反例的尋找、文獻脈絡的定位，甚至反駁的提出，現在都有可能外包給生成式 AI，那麼相較於沒有 GenAI 的時代，「做哲學」究竟改變了什麼？這不是在問 AI 能否取代哲學，而是進一步追問：哪些能力與實踐仍構成「做哲學」不可或缺的一部分，哪些則可能因工具而改變。</p>
+      <p>答案或許不落在「毫無改變」與「徹底改變」兩端，更可能是有些要素被取代或重新配置，但有些則沒有。真正困難的地方，是指出界線應該在哪。過去在讀了足夠多的文獻、也寫了足夠多之後，我們好像就能逐漸體會「做哲學」是怎麼一回事。但在 GenAI 介入、參與乃至滲透「做哲學」的各個面向及環節之後，究竟什麼是「做哲學」，以及在做的過程中必須具備哪些要素仍可稱為「做哲學」，似乎成為需要重新說明的問題。</p>
+      <p>這項說明並不容易，因為「做」哲學無可避免地依附於個人經驗、知識背景、所用工具與所處環境，因此，針對什麼是「做哲學」的回答，在尋求共通性的同時，也難免因地制宜、因人而異。那麼，在這些差異之下，我們憑什麼仍認定彼此都在「做哲學」？</p>
+      <p class="thesis">這正是本工作坊想探索的問題。本工作坊從三個面向切入：GenAI 時代的大學與哲學教育、人與 GenAI 如何共構哲學知識、以及 GenAI 內建的腳本與價值預設。上午三場引言分別從一個面向提出問題，下午則由參與者分組認領這些問題，親手操作 GenAI，嘗試形成可能的回答。這樣的安排，與其說是從提問中找答案，不如說是一起試著把 GenAI 時代「做哲學」的樣子實際「做」出來看看。</p>
+    </div>
+  </section>
+
+  <section class="agenda-section">
+    <div class="wrap">
+      <span class="eyebrow">當日議程</span>
+      <table class="agenda">
+        <tr><th>時間</th><th>內容</th></tr>
+        <tr><td>09:40–10:00</td><td>報到、茶水，領取材料</td></tr>
+        <tr><td>10:00–10:10</td><td>開場：說明一天的進行方式</td></tr>
+        <tr class="session"><td>10:10–11:00</td><td>第一場　GenAI 時代的大學與哲學教育（引言 15 分、與談 15 分、討論 20 分）</td></tr>
+        <tr><td>11:00–11:10</td><td>休息</td></tr>
+        <tr class="session"><td>11:10–11:40</td><td>第二場　人與 GenAI 如何共構哲學知識（引言 15 分、討論 15 分）</td></tr>
+        <tr class="session"><td>11:40–12:10</td><td>第三場　GenAI 內建的腳本與價值預設（引言 15 分、討論 15 分）</td></tr>
+        <tr><td>12:10–13:20</td><td>午餐</td></tr>
+        <tr><td>13:20–13:30</td><td>各組議題認領與說明操作步驟</td></tr>
+        <tr><td>13:30–15:00</td><td>分組操作第一輪：探索可能的回答與做法</td></tr>
+        <tr><td>15:00–15:20</td><td>休息</td></tr>
+        <tr><td>15:20–16:20</td><td>分組操作第二輪：整理各組成果文字</td></tr>
+        <tr><td>16:20–17:00</td><td>各組報告：全體共讀並修訂共同紀錄</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="sessions">
+    <div class="wrap">
+      <span class="eyebrow">上午　三場引言</span>
+
+      <div class="toc-item">
+        <div class="toc-num">I</div>
+        <div class="toc-body">
+          <h3>GenAI 時代的大學與哲學教育</h3>
+          <div class="toc-speaker">引言人　林從一 老師／　與談人　鄧育仁 老師</div>
+          <div class="toc-question">當 GenAI 能快速產出摘要、論證、反例與文章時，大學教育宣稱培養的能力，有哪些仍必須由學習者親自形成？又應如何區分「作品可由 AI 生成」與「能力已被 AI 取代」？</div>
+        </div>
+      </div>
+
+      <div class="toc-item">
+        <div class="toc-num">II</div>
+        <div class="toc-body">
+          <h3>人與 GenAI 如何共構哲學知識</h3>
+          <div class="toc-speaker">引言人　蔡政宏 老師</div>
+          <div class="toc-question">探討人如何引導、修改、否決與承擔 GenAI 所產出的文本，使最後的論證真正成為「自己的」。在人機共同形成的論證中，哪些貢獻足以構成作者資格？</div>
+        </div>
+      </div>
+
+      <div class="toc-item">
+        <div class="toc-num">III</div>
+        <div class="toc-body">
+          <h3>GenAI 內建的腳本與價值預設</h3>
+          <div class="toc-speaker">引言人　甘偵蓉 老師</div>
+          <div class="toc-question">把 AI 本身作為分析對象，檢視其回答、追問、警語、拒答所預設的價值排序：同一規範性問題換個提示語、語言或自我描述身分，答案是否隨之改變，而這種改變又該如何理解？</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="afternoon-examples">
+    <div class="wrap">
+      <span class="eyebrow">下午　分組實作議題舉例</span>
+      <span class="example-note">以下只是議題方向與做法的舉例，用來說明整體設計，不是當天的定案題目。當天實際要處理的問題，由三位引言人或與談人在上午場中提出。</span>
+
+      <div class="example-card">
+        <div class="q">1｜哲學宣稱培養的能力清單中，哪些在 GenAI 進入之後仍只能由人習得？</div>
+        <div class="op">選取一篇哲學文章或某哲學系的能力指標，逐項測試 AI 能否產出相應成果，並區分「作品生成」與「能力取代」。</div>
+      </div>
+      <div class="example-card">
+        <div class="q">2｜在人機共構的論證裡，哪種貢獻使人有資格視為該論證是自己所建構的？</div>
+        <div class="op">實際共構一個論證並留下過程紀錄，事後標記「提出、否決、修改、負責」四種動作及其分布。</div>
+      </div>
+      <div class="example-card">
+        <div class="q">3｜同一規範性問題換個提示語、語言或自我描述身分就得到不同答案，這該理解為價值預設的偶然，還是情境敏感的實踐判斷？</div>
+        <div class="op">針對同一個規範性問題，比較不同模型、帳號及提示語輸入所獲得的回應文本之論述差異，亦可改變語言與自我描述身分，觀察回答差異。</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="modes">
+    <div class="wrap">
+      <span class="eyebrow">下午三組　人與 GenAI 的關係位置</span>
+      <p style="font-size:15px; margin-bottom: 6px;">以下說的是各組把 GenAI 擺在什麼位置、參與者要對它做什麼，不是預告當天會得出什麼結論。每組附一則可查證的文獻，只是指出已經有人往這個方向走過，不是要各組照著做。</p>
+
+      <div class="mode-item">
+        <div class="mode-head"><span>I</span>把 AI 當成能力清單的測試對象</div>        <p class="mode-body">取一份哲學系宣稱要培養的能力清單，逐項交給 AI 試做，包括重構論證、扮演不同理論傳統提出反駁、判斷哪個反駁值得回應。重點不在它做得好不好，而在它做得出來之後，這一項究竟只是「成品 AI 也做得出來」，還是「這項能力人可以不必再學」。清單上判不出來的那幾項，比判得出來的更值得寫進紀錄。</p>
+        <div class="mode-ref">
+          <span class="ref-head">DigiDan：以哲學家著作訓練出來的模型</span>
+          研究者用 Daniel Dennett 的著作微調 GPT-3，再以十個哲學問題同時詢問本人與模型，請受試者指認哪一則出自 Dennett。長期研究 Dennett 的專家答對比例約五成，略高於隨機猜測，但遠不及研究者原先的預期。
+          <span class="cite">Schwitzgebel, E., Schwitzgebel, D., &amp; Strasser, A. (2024). Creating a large language model of a philosopher. <em>Mind &amp; Language</em>, 39(2), 237–259. <a href="https://onlinelibrary.wiley.com/doi/10.1111/mila.12466" target="_blank" rel="noopener">doi:10.1111/mila.12466</a></span>
+        </div>
+      </div>
+
+      <div class="mode-item">
+        <div class="mode-head"><span>II</span>把 AI 當成共同建構者，並檢驗這個說法</div>
+        <p class="mode-body">「與 AI 一起建構、修正、重建核心概念」是時下常見的說法。這一組實際做一次，全程留下紀錄，再回頭問：這段過程裡，哪一種貢獻讓人有資格說這個論證是自己的？提出、否決、修改、承擔責任，這四項若分別由人與 AI 承擔，作者資格該繫於哪一項。</p>
+        <div class="mode-ref">
+          <span class="ref-head">取得功勞與承擔責任並不對等</span>
+          此篇短文指出，生成式 AI 使功勞與責任的歸屬出現落差：輸出造成損害時，使用者仍須負責；輸出品質良好時，卻難以據此主張功勞。作者群中的 Nyholm 與 Danaher 稱這種處境為「成就落差」，工作確實完成了，完成者卻得不到相應的肯認。作者資格若依功勞認定，這個落差便使它無法與責任同步成立。
+          <span class="cite">Porsdam Mann, S., Earp, B. D., Nyholm, S., Danaher, J., et al. (2023). Generative AI entails a credit–blame asymmetry. <em>Nature Machine Intelligence</em>, 5(5), 472–475. <a href="https://www.nature.com/articles/s42256-023-00653-1" target="_blank" rel="noopener">doi:10.1038/s42256-023-00653-1</a></span>
+        </div>
+      </div>
+
+      <div class="mode-item">
+        <div class="mode-head"><span>III</span>把 AI 當成分析對象，測它的價值排序</div>
+        <p class="mode-body">AI 常被說成是能嚴格質疑、反駁你的對話者。這一組把這項能力本身翻過來檢視：它的質疑、警語與拒答，背後依循的是什麼價值排序？取同一個規範性問題，換模型、換帳號、換語言、換自我描述的身分反覆詢問，將答案並排比對，再判斷這些差異究竟是價值預設並不穩定，還是它確實對情境有所區辨。</p>
+        <div class="mode-ref">
+          <span class="ref-head">語言不同答案不同，源頭在訓練資料</span>
+          研究團隊以六項研究指出，各國政府對媒體的管制會透過訓練資料一路影響到模型的回答。比對三十七個國家後可以看到，以新聞自由度較低國家的語言提問時，模型對該國政府的評價明顯偏向正面；另外，只需在開放權重的模型上加入少量官方口徑的新聞重新訓練，回答便明顯偏向政府立場。換個語言之所以得到不同答案，未必只是模型對情境有所區辨。
+          <span class="cite">Waight, H., Yang, E., Yuan, Y., Messing, S., Roberts, M. E., Stewart, B. M., &amp; Tucker, J. A. (2026). State media control influences large language models. <em>Nature</em>, 655, 685–693. <a href="https://www.nature.com/articles/s41586-026-10506-7" target="_blank" rel="noopener">doi:10.1038/s41586-026-10506-7</a></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="production">
+    <div class="wrap">
+      <span class="eyebrow">分組、紀錄與共同產出</span>
+      <p style="font-size:15px;">分組在當天現場完成，原則上依報名時填寫的主題偏好安排，每組三到五人，三組合計約十五人。各組使用雲端共筆文件，依固定欄位記錄：所屬問題、暫定命題、採用的方法或提示語、模型的回應、出現過的反對意見、後續的修正，以及尚未解決的部分。</p>
+      <p style="font-size:15px;">收尾前各組整理一段三百字以內的成果文字，最後四十分鐘由全體逐段讀過、當場刪修，散會時就有一份共同紀錄初稿。活動後開放參與者補充與修正七日，定稿後公布於台灣哲學學會網站及 Google 文件，供全體參與者及往後有興趣的人參考。</p>
+    </div>
+  </section>
+
+  <section class="references">
+    <div class="wrap">
+      <span class="eyebrow">工作坊設計參考形式</span>
+      <div class="ref-list">
+        <div class="ref-item">
+          <a href="https://www.turing.ac.uk/collaborate-turing/data-study-groups" target="_blank" rel="noopener">Alan Turing Institute｜Data Study Groups</a>　<span class="ref-loc">英國。由提問方帶來真實問題，與會者分組處理，最後整理成一份可供引用的報告。</span>
+        </div>
+        <div class="ref-item">
+          <a href="https://sites.rutgers.edu/critical-ai/" target="_blank" rel="noopener">Critical AI @ Rutgers</a>　<span class="ref-loc">美國。由參與者共同撰寫並公開工作坊紀錄。</span>
+        </div>
+        <div class="ref-item">
+          <a href="https://aipedagogy.org/" target="_blank" rel="noopener">AI Pedagogy Project｜metaLAB (at) Harvard</a>　<span class="ref-loc">美國。以動手實驗帶動對 AI 能力與限制的批判性討論。</span>
+        </div>
+        <div class="ref-item">
+          <a href="http://sociologyol.ruc.edu.cn/shxdt/xwgg/shxxszxgg/18ee82ece570417dbcd347b50aa55fcb.htm" target="_blank" rel="noopener">AI for Humanities 人機協作徵文｜清華方塘研究院</a>　<span class="ref-loc">中國。把人機協作的過程本身列為評審依據，要求投稿附上對話紀錄與方法說明。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="registration">
+    <div class="wrap">
+      <span class="eyebrow">報名方式</span>
+      <div class="reg-grid">
+        <div class="reg-card full">
+          <h3>全日實作組</h3>
+          <div class="cap">三組・每組五人・共 15 名</div>
+          <p>全程參與，含下午分組操作。需填寫簡答題以利分組，請備妥可上網裝置。</p>
+        </div>
+        <div class="reg-card">
+          <h3>上午場旁聽</h3>
+          <div class="cap">30 名</div>
+          <p>參與三場引言與討論，午餐後可自由離場，無需下午操作。</p>
+        </div>
+      </div>
+      <div class="reg-meta">
+        <span>報名截止：<strong>2026 年 9 月 27 日（日）</strong></span>
+        <span>地點：<strong>台灣大學哲學系館</strong></span>
+      </div>
+      <a class="cta" href="https://forms.gle/gXpHKkj2EbBXCiD98" target="_blank" rel="noopener">前往報名表　→</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="colophon">
+  <div class="wrap">
+    主辦｜台灣哲學學會　　地點｜台灣大學哲學系館
+  </div>
+</footer>
+
+
+</body>
+</html>
